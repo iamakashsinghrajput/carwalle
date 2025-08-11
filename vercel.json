@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "api/location.js": {
+      "maxDuration": 10
+    }
+  },
+  "env": {
+    "MONGODB_URI": "@mongodb-uri"
+  },
+  "build": {
+    "env": {
+      "MONGODB_URI": "@mongodb-uri"
+    }
+  }
+}

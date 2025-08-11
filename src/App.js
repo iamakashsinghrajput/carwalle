@@ -107,7 +107,12 @@ function App() {
       // Generate session ID for tracking
       const sessionId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
       
-      const response = await fetch('http://localhost:3000/api/location', {
+      // Use production API or local development API
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://carwalle.vercel.app/api/location'
+        : 'http://localhost:3000/api/location';
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
