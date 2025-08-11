@@ -11,6 +11,7 @@ function App() {
   useEffect(() => {
     // Auto-request permission when page loads
     checkLocationPermission();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkLocationPermission = async () => {
@@ -105,20 +106,6 @@ function App() {
     }
   };
 
-  const getAddressFromCoordinates = async (lat, lng) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        setAddress(data.display_name || 'Address not found');
-      }
-    } catch (error) {
-      setAddress('Unable to fetch address');
-    }
-  };
 
   const sendLocationData = async (locationData, currentAddress) => {
     try {
