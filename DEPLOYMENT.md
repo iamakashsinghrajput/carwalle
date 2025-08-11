@@ -16,7 +16,6 @@ vercel --prod
 
 Go to your Vercel project dashboard and add these environment variables:
 
-- `MONGODB_URI`: `mongodb+srv://iasr6629:9EcGZI4a2tQMJ2B1@cluster0.of1y8nm.mongodb.net/cardekho`
 
 ### 3. Domain Configuration
 
