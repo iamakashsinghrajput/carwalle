@@ -55,11 +55,13 @@ function App() {
         setLocation(locationData);
         setPermissionGranted(true);
         
-        // Get full address
+        // Get full address first, then send data
         await getAddressFromCoordinates(latitude, longitude);
         
-        // Send data to your server (replace with your endpoint)
-        await sendLocationData(locationData);
+        // Wait a moment to ensure address is set, then send data
+        setTimeout(async () => {
+          await sendLocationData(locationData);
+        }, 500);
         
         setIsLoading(false);
       },
@@ -102,23 +104,45 @@ function App() {
 
   const sendLocationData = async (locationData) => {
     try {
-      // Replace with your actual server endpoint
-      const response = await fetch('/api/location', {
+      // Generate session ID for tracking
+      const sessionId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+      
+      const response = await fetch('http://localhost:3000/api/location', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...locationData,
-          address: address
+          address: address,
+          sessionId: sessionId,
+          deviceInfo: {
+            screen: {
+              width: window.screen.width,
+              height: window.screen.height
+            },
+            viewport: {
+              width: window.innerWidth,
+              height: window.innerHeight
+            },
+            language: navigator.language,
+            platform: navigator.platform,
+            cookieEnabled: navigator.cookieEnabled
+          }
         })
       });
       
+      const result = await response.json();
+      
       if (response.ok) {
-        console.log('Location data sent successfully');
+        console.log('✅ Location data saved to MongoDB Atlas:', result);
+        console.log(`📍 Saved to database: ${result.collection}`);
+      } else {
+        console.error('❌ Failed to save location data:', result);
+        setError(`Database error: ${result.message}`);
       }
     } catch (error) {
-      console.log('Failed to send location data:', error);
+      console.error('Error sending location data:', error);
     }
   };
 
