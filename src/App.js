@@ -55,13 +55,31 @@ function App() {
         setLocation(locationData);
         setPermissionGranted(true);
         
-        // Get full address first, then send data
-        await getAddressFromCoordinates(latitude, longitude);
+        console.log('📍 Location captured, getting address...');
         
-        // Wait a moment to ensure address is set, then send data
-        setTimeout(async () => {
-          await sendLocationData(locationData);
-        }, 500);
+        // Get full address first
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`
+          );
+          
+          let currentAddress = 'Address not available';
+          if (response.ok) {
+            const data = await response.json();
+            currentAddress = data.display_name || 'Address not found';
+            setAddress(currentAddress);
+            console.log('🏠 Address fetched:', currentAddress);
+          }
+          
+          // Send data immediately with the fetched address
+          console.log('📤 Sending location data to database...');
+          await sendLocationData(locationData, currentAddress);
+          
+        } catch (addressError) {
+          console.error('Address fetch error:', addressError);
+          // Still send data even if address fails
+          await sendLocationData(locationData, 'Address fetch failed');
+        }
         
         setIsLoading(false);
       },
@@ -102,8 +120,12 @@ function App() {
     }
   };
 
-  const sendLocationData = async (locationData) => {
+  const sendLocationData = async (locationData, currentAddress) => {
     try {
+      console.log('🔄 Preparing to send location data...');
+      console.log('Location data:', locationData);
+      console.log('Current address:', currentAddress);
+      
       // Generate session ID for tracking
       const sessionId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
       
@@ -112,32 +134,41 @@ function App() {
         ? 'https://carwalle.vercel.app/api/location'
         : 'http://localhost:3000/api/location';
       
+      console.log('📡 Sending to API:', apiUrl);
+      
+      const payload = {
+        ...locationData,
+        address: currentAddress || address || 'Address not available',
+        sessionId: sessionId,
+        deviceInfo: {
+          screen: {
+            width: window.screen.width,
+            height: window.screen.height
+          },
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight
+          },
+          language: navigator.language,
+          platform: navigator.platform,
+          cookieEnabled: navigator.cookieEnabled
+        }
+      };
+      
+      console.log('📦 Payload being sent:', payload);
+      
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...locationData,
-          address: address,
-          sessionId: sessionId,
-          deviceInfo: {
-            screen: {
-              width: window.screen.width,
-              height: window.screen.height
-            },
-            viewport: {
-              width: window.innerWidth,
-              height: window.innerHeight
-            },
-            language: navigator.language,
-            platform: navigator.platform,
-            cookieEnabled: navigator.cookieEnabled
-          }
-        })
+        body: JSON.stringify(payload)
       });
       
+      console.log('📡 Response status:', response.status);
+      
       const result = await response.json();
+      console.log('📡 Response data:', result);
       
       if (response.ok) {
         console.log('✅ Location data saved to MongoDB Atlas:', result);
@@ -147,7 +178,8 @@ function App() {
         setError(`Database error: ${result.message}`);
       }
     } catch (error) {
-      console.error('Error sending location data:', error);
+      console.error('❌ Error sending location data:', error);
+      setError(`Network error: ${error.message}`);
     }
   };
 
