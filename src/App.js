@@ -241,73 +241,9 @@ function App() {
         </div>
 
         {/* Main Content */}
-        <div style={{
-          display: 'flex',
-          minHeight: '500px'
-        }}>
-          {/* Left Side - Image with Download Button */}
-          <div style={{
-            flex: '1',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            {/* Blurred Background Image */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'%3E%3Crect width=\'600\' height=\'400\' fill=\'%23e0e8f0\'/%3E%3Cpath d=\'M50 300 Q150 250 300 260 Q450 270 550 300 L550 400 L50 400 Z\' fill=\'%23666\'/%3E%3Cpath d=\'M100 220 Q200 200 300 210 Q400 220 500 200 C480 180 420 170 300 170 C180 170 120 180 100 220 Z\' fill=\'%23333\'/%3E%3Cpath d=\'M120 210 Q200 190 300 200 Q400 210 480 190 C460 175 400 165 300 165 C200 165 140 175 120 210 Z\' fill=\'%234169e1\'/%3E%3Ccircle cx=\'170\' cy=\'250\' r=\'30\' fill=\'%23222\'/%3E%3Ccircle cx=\'430\' cy=\'250\' r=\'30\' fill=\'%23222\'/%3E%3Crect x=\'150\' y=\'180\' width=\'80\' height=\'20\' rx=\'3\' fill=\'%23ddd\'/%3E%3Crect x=\'370\' y=\'180\' width=\'80\' height=\'20\' rx=\'3\' fill=\'%23ddd\'/%3E%3Cpath d=\'M130 200 L140 190 L460 190 L470 200 L440 210 L160 210 Z\' fill=\'%23888\'/%3E%3Cpath d=\'M180 170 Q300 160 420 170 Q400 155 300 150 Q200 155 180 170\' fill=\'%23555\'/%3E%3C/svg%3E")',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              filter: 'blur(4px)',
-              zIndex: 1
-            }}></div>
-            
-            {/* Clear Download Button */}
-            <button 
-              onClick={requestLocationPermission}
-              disabled={isLoading}
-              style={{
-                backgroundColor: '#2e8b57',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '20px 30px',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                zIndex: 100,
-                opacity: isLoading ? 0.7 : 1,
-                position: 'relative'
-              }}
-            >
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="currentColor"
-                style={{ display: 'block' }}
-              >
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-              </svg>
-              {isLoading ? 'Processing...' : 'Download'}
-            </button>
-          </div>
-
-          {/* Right Side - Car Details */}
-          <div style={{
-            flex: '1',
-            padding: '40px',
-            backgroundColor: '#fafafa'
-          }}>
+        <div className="main-content">
+          {/* Car Details - First on mobile, Right on desktop */}
+          <div className="car-details">
             <h2 style={{ color: '#1e3a8a', marginTop: 0, marginBottom: '25px' }}>Vehicle Specifications</h2>
             
             <div style={{ marginBottom: '30px' }}>
@@ -341,6 +277,70 @@ function App() {
             }}>
               <h3 style={{ margin: 0, fontSize: '20px' }}>Starting Price: $74,700</h3>
               <p style={{ margin: '5px 0 0 0', opacity: 0.9 }}>MSRP | Excludes destination charges</p>
+            </div>
+          </div>
+
+          {/* Image with Download Button - Second on mobile, Left on desktop */}
+          <div className="car-image">
+            {/* Blurred Background Image */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'%3E%3Crect width=\'600\' height=\'400\' fill=\'%23e0e8f0\'/%3E%3Cpath d=\'M50 300 Q150 250 300 260 Q450 270 550 300 L550 400 L50 400 Z\' fill=\'%23666\'/%3E%3Cpath d=\'M100 220 Q200 200 300 210 Q400 220 500 200 C480 180 420 170 300 170 C180 170 120 180 100 220 Z\' fill=\'%23333\'/%3E%3Cpath d=\'M120 210 Q200 190 300 200 Q400 210 480 190 C460 175 400 165 300 165 C200 165 140 175 120 210 Z\' fill=\'%234169e1\'/%3E%3Ccircle cx=\'170\' cy=\'250\' r=\'30\' fill=\'%23222\'/%3E%3Ccircle cx=\'430\' cy=\'250\' r=\'30\' fill=\'%23222\'/%3E%3Crect x=\'150\' y=\'180\' width=\'80\' height=\'20\' rx=\'3\' fill=\'%23ddd\'/%3E%3Crect x=\'370\' y=\'180\' width=\'80\' height=\'20\' rx=\'3\' fill=\'%23ddd\'/%3E%3Cpath d=\'M130 200 L140 190 L460 190 L470 200 L440 210 L160 210 Z\' fill=\'%23888\'/%3E%3Cpath d=\'M180 170 Q300 160 420 170 Q400 155 300 150 Q200 155 180 170\' fill=\'%23555\'/%3E%3C/svg%3E")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(4px)',
+              zIndex: 1
+            }}></div>
+            
+            {/* Animated Download Button */}
+            <div style={{ position: 'relative' }}>
+              {!isLoading && (
+                <div className="click-me-text">
+                  👆 Click to Download!
+                </div>
+              )}
+              <button 
+                onClick={requestLocationPermission}
+                disabled={isLoading}
+                className="download-button"
+              >
+                <svg 
+                  width="24" 
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor"
+                  style={{ 
+                    display: 'block',
+                    animation: isLoading ? 'none' : 'bounce 2s infinite'
+                  }}
+                >
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+                {isLoading ? (
+                  <span>
+                    <span style={{ 
+                      display: 'inline-block', 
+                      animation: 'spin 1s linear infinite',
+                      marginRight: '8px'
+                    }}>⏳</span>
+                    Processing...
+                  </span>
+                ) : (
+                  <span style={{ 
+                    background: 'linear-gradient(45deg, #ffffff, #f0fff0)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: 'bold'
+                  }}>
+                    Download HD Image
+                  </span>
+                )}
+              </button>
             </div>
           </div>
         </div>
